@@ -1,44 +1,51 @@
+class NodoArbol:
+    def __init__(self, valor):
+        self.valor = valor
+        self.hijos = []
 
-class TreeNode:
-    def __init__(self, val):
-        self.val = val
-        self.children = []
-
-def backtrack(node, path):
+def backtrack(nodo, objetivo, camino, indent=''):
     # Hacer algo con el nodo actual, por ejemplo, imprimir su valor
-    print(node.val)
+    print(indent + '└─', nodo.valor)
 
     # Agregar el nodo actual al camino
-    path.append(node.val)
+    camino.append(nodo.valor)
 
     # Si el nodo actual es una solución, hacer algo con el camino encontrado
-    if is_solution(node):
-        process_solution(path)
+    if nodo.valor == objetivo:
+        procesar_solucion(camino)
     
     # Recorrer los hijos del nodo actual
-    for child in node.children:
+    for i, hijo in enumerate(nodo.hijos):
         # Si el hijo no está en el camino actual, explorarlo
-        if child.val not in path:
-            backtrack(child, path)
+        if hijo.valor not in camino:
+            # Imprimir la conexión entre nodos
+            print(indent + '  |')
+
+            # Recursivamente explorar el hijo
+            backtrack(hijo, objetivo, camino, indent + ('   ' if i == len(nodo.hijos) - 1 else '  |'))
     
     # Retroceder: quitar el nodo actual del camino
-    path.pop()
+    camino.pop()
 
-def is_solution(node):
-    # Implementar la condición para determinar si el nodo es una solución
-    # Por ejemplo, si es un nodo hoja
-    return not node.children
+    # Si se ha explorado todo el árbol y no se ha encontrado una solución, imprimir un mensaje
+    if nodo.valor == 1 and objetivo not in camino:
+        print("No se encontró una solución para el objetivo", objetivo)
 
-def process_solution(path):
+
+
+def procesar_solucion(camino):
     # Hacer algo con el camino encontrado
-    print("Solución encontrada:", path)
+    print("Solución encontrada:", camino)
 
 # Ejemplo de uso
 # Crear un árbol de ejemplo
-root = TreeNode(1)
-root.children = [TreeNode(2), TreeNode(3)]
-root.children[0].children = [TreeNode(4), TreeNode(5)]
-root.children[1].children = [TreeNode(6), TreeNode(7)]
+raiz = NodoArbol(1)
+raiz.hijos = [NodoArbol(2), NodoArbol(3)]
+raiz.hijos[0].hijos = [NodoArbol(4), NodoArbol(5)]
+raiz.hijos[1].hijos = [NodoArbol(6), NodoArbol(7)]
 
-# Llamar a la función de backtracking
-backtrack(root, [])
+# Especificar el nodo objetivo que se desea buscar
+nodo_objetivo = 8
+
+# Llamar a la función de backtracking con el nodo raíz y el nodo objetivo
+backtrack(raiz, nodo_objetivo, [])
